@@ -9,7 +9,7 @@ from scripts.parachute import Parachute
 
 
 class Player(Entity):
-    SPEED = 1
+    SPEED = 2
     JUMP_HEIGHT = 7
 
     def __init__(self, x, y) -> None:
@@ -62,10 +62,6 @@ class Player(Entity):
                 if movement["vertical"] > 0:
                     player_rect.bottom = tile.rect.top
                     self.is_on_ground = True
-                    if len(self.parachutes) > 0:
-                        self.y_velocity = .1
-                    else:
-                        self.y_velocity = 3
                 if movement["vertical"] < 0:
                     player_rect.top = tile.rect.bottom
 
@@ -83,13 +79,15 @@ class Player(Entity):
         if key_presses["d"]:
             player_movement["horizontal"] += self.SPEED
 
-        print(self.y_velocity)
-        if len(self.parachutes) > 0:
-            if self.y_velocity < 1:
-                self.y_velocity += 0.1
-        else:
-            if self.y_velocity < 3:
+        if self.y_velocity < 3:
+            if len(self.parachutes) > 0:
+                self.y_velocity += 0.01
+            else:
                 self.y_velocity += 0.2
+
+        if len(self.parachutes) > 0:
+            self.y_velocity = 1
+        
 
 
         self.rect = self.calculate_rect(player_movement, self.rect, tiles)
